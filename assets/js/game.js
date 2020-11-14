@@ -4,35 +4,43 @@ var fightOrSkip = function() {
   
     promptFight = promptFight.toLowerCase();
 
-    // Conditional Recursive Function Call
-    while (promptFight === "" || promptFight === null) {
-        window.alert("You need to provide a valid answer! Please try again.");
-        debugger;
-        return fightOrSkip();
-  }
-  
     // if player picks "skip" confirm and then stop the loop
     if (promptFight === "skip") {
-      // confirm player wants to skip
-      var confirmSkip = window.confirm("Are you sure you'd like to quit?");
-  
-      // if yes (true), leave fight
-      if (confirmSkip) {
-        window.alert(playerInfo.name + " has decided to skip this fight. Goodbye!");
-        // subtract money from playerMoney for skipping
-        playerInfo.playerMoney = Math.max(0, playerInfo.money - 10);
+        // confirm player wants to skip
+        var confirmSkip = window.confirm("Are you sure you'd like to quit?");
+    
+        // if yes (true), leave fight
+        if (confirmSkip) {
+          window.alert(playerInfo.name + " has decided to skip this fight. Goodbye!");
+          // subtract money from playerMoney for skipping
+          playerInfo.playerMoney = Math.max(0, playerInfo.money - 10);
+          return true;
+        }
       }
+
+    // Conditional Recursive Function Call
+    if (promptFight === "" || promptFight === null || !promptFight === "fight") {
+        window.alert("You need to provide a valid answer! Please try again.");
+        return fightOrSkip();
     }
+return false;
 }
+
 var fight = function(enemy) {
 
-    while (enemy.health > 0 && playerInfo.health > 0) {
+    // keep track of who goes first
+    var isPlayerTurn = true;
         
-        fightOrSkip();
-        if (fightOrSkip()) {
-            break;
-        }
-        //generate random damage value based on player's attack power
+    if (Math.random() > 0.5) {
+        isPlayerTurn = false;
+      } 
+
+    while (enemy.health > 0 && playerInfo.health > 0) {
+        if (isPlayerTurn) {
+            if (fightOrSkip()) {
+                break;
+            }
+        
         var damage = randomNumber(playerInfo.attack - 3, playerInfo.attack);
         //Subtract the value of `playerAttack` from the value of `enemyHealth` and use that result to update the value in the `enemyHealth` variable
         enemy.health = Math.max(0, enemy.health - damage);
@@ -52,7 +60,8 @@ var fight = function(enemy) {
      
         } else {
             window.alert(enemy.name + " still has " + enemy.health + " health left.");
-        }
+        } 
+        } else {
 
         //generate randome damage value based on enemy's attack power
         var damage = randomNumber(enemy.attack -3, enemy.attack);
@@ -71,6 +80,9 @@ var fight = function(enemy) {
         } else {
             window.alert(playerInfo.name + " still has " + playerInfo.health + " health left.");
         } 
+        } 
+        // switch turn order for next round
+        isPlayerTurn = !isPlayerTurn;
     }
 };
 
